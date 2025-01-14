@@ -6,7 +6,9 @@ import {useEffect, useState} from "react";
 const url = "http://127.0.0.1:5000";
 //!!! passing info to async() funcs
 
-const fetchUserDetails = async({isLoading, Error, path}) => {
+const fetchUserDetailsComponent = async({path}) => {
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
     setIsLoading(true);
     setError(null);
 
@@ -17,7 +19,7 @@ const fetchUserDetails = async({isLoading, Error, path}) => {
             throw new Error("failed to fetch details");
         }
         const resp = await response.json();
-        const data = JJSON.parse(JJSON.stringify(resp));
+        const data = JSON.parse(JSON.stringify(resp));
         //diff methods do diff things depending on data
         //setIsLoading(false);
         //return data;
@@ -30,7 +32,12 @@ const fetchUserDetails = async({isLoading, Error, path}) => {
 };
 
 
-const handleSubmit = async(event, {path, settings}) => {
+export default function fetchUserDetails({isLoading, Error, path}) {
+    return fetchUserDetailsComponent(isLoading, Error, path);
+}
+
+
+const handleSubmitComponent = async(event, {path, settings}) => {
     event.preventDefault();
 
     try{
@@ -41,3 +48,8 @@ const handleSubmit = async(event, {path, settings}) => {
         return e;
     }
 };
+
+
+export function handleSubmit({event, path, settings}){
+    return handleSubmitComponent(event, path, settings);
+}
