@@ -12,7 +12,7 @@ import UserList from "./DisplayInfo.js";
 
 
 const App = () => {
-    const [users, setUsers] = useState(null);
+    const [users, setUsers] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [userAdded, setUserAdded] = useState(true);
@@ -54,8 +54,9 @@ const App = () => {
     //have to call useEffect again somehow in order to make changes happen again
     //could UserList itself be edited so that it itself does fetchusers when needed
     //instead of passing users to userlist, could it set users on its own?
-        fetchUsers();
-    }, []);
+        //fetchUsers();
+        console.log(users);
+    }, [users]);
 
     if (userAdded){
         setUserAdded(!userAdded);

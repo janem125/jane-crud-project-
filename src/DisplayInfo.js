@@ -215,18 +215,29 @@ export default function UserList({users}) {
         console.log(id);
     };
 
-    const getRows = () => {
-        return rowData.map((user) => {
+    useEffect(() => {
+        //fetchUsers();
+        console.log(users);
+    }, [users]);
 
-        return(
+    const getRows = () => {
+        if (users && users.length > 0) {
+            console.log(users);
+            return users.map((user) => {
+        (
             <div>
-                <div class="row_grid">{selectedUserId===user.id && <UserDetails id={selectedUserId}/>}</div>
-                <div class="row_grid">{!(selectedUserId === user.id) && <UserData id={user.id}/>}</div>
-                <div class="inline_grid" onClick={() => {handleUserClick(user.id);}}>Edit {user.username} data</div>
+            {user.username}
+//                <div class="row_grid">{selectedUserId===user.id && <UserDetails id={selectedUserId}/>}</div>
+//                <div class="row_grid">{!(selectedUserId === user.id) && <UserData id={user.id}/>}</div>
+//                <div class="inline_grid" onClick={() => {handleUserClick(user.id);}}>Edit {user.username} data</div>
             </div>
             );
 
         });
+        }
+        return(
+        <></>
+        );
     }
 //<div class="inline_grid" onClick={() => {handleUserClick(user.id);}}><button >Edit {user.username} data</button></div>
     //.id or .username?
