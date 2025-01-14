@@ -224,12 +224,11 @@ export default function UserList({users}) {
         if (users && users.length > 0) {
             console.log(users);
             return users.map((user) => {
-        (
+        return (
             <div>
-            {user.username}
-//                <div class="row_grid">{selectedUserId===user.id && <UserDetails id={selectedUserId}/>}</div>
-//                <div class="row_grid">{!(selectedUserId === user.id) && <UserData id={user.id}/>}</div>
-//                <div class="inline_grid" onClick={() => {handleUserClick(user.id);}}>Edit {user.username} data</div>
+                <div class="row_grid">{selectedUserId===user.id && <UserDetails id={selectedUserId}/>}</div>
+                <div class="row_grid">{!(selectedUserId === user.id) && <UserData id={user.id}/>}</div>
+                <div class="inline_grid" onClick={() => {handleUserClick(user.id);}}>Edit {user.username} data</div>
             </div>
             );
 
