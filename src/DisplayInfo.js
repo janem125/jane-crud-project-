@@ -3,10 +3,12 @@ import React from "react";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import TextField from '@mui/material/TextField';
-
+import fetchUserDetails from "./FetchSubmit.js"
+//import {fetchUserDetails, handleSubmit} from "./FetchSubmit.js"
 
 const UserDetails = ({id}) =>{
     console.log("in UserDetails component: " + id);
+    const url = "/saveUserDetails";
     //const [userDetails, setUserDetails] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -32,20 +34,12 @@ const UserDetails = ({id}) =>{
     ];
 
     useEffect(() => {
-        const fetchUserDetails = async() => {
-            setIsLoading(true);
-            setError(null);
-
-            try{
-                const response = await fetch("http://127.0.0.1:5000/userDetails/" + String(id));
-                //something similar to await fetch to do post
-                //console.log(response);
-                if (!response.ok){
-                    throw new Error("failed to fetch details");
-                }
-                const resp = await response.json();
-                const data = JSON.parse(JSON.stringify(resp));
-                //console.log(data);
+    if (!id){
+        return;
+      }
+      const fetchData = async () => {
+         const data = await fetchUserDetails(id);
+         if (data) {
                 setUsername(data[0].username);
                 setEmail(data[0].email);
                 setOrg(data[0].organization);
@@ -54,17 +48,19 @@ const UserDetails = ({id}) =>{
                 setLocState(data[0].state);
                 setCountry(data[0].country);
                 setPostal(data[0].postalcode);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setIsLoading(false);
             }
-        };
+      }
 
-        if (id) {
-            fetchUserDetails();
-        }
+      fetchData();
     }, [id]);
+
+    const callHandleSubmit = async(event) => {
+        console.log("57");
+        console.log("http://127.0.0.1:5000" + url + "/");
+        const newUrl = ("http://127.0.0.1:5000", url, "/");
+        console.log(newUrl);
+        handleSubmit(userDetails, "http://127.0.0.1:5000/saveUserDetails/");
+    }
 
     const handleSubmit = async(event) => {
         event.preventDefault();
@@ -102,7 +98,7 @@ const UserDetails = ({id}) =>{
     if (email){
         if (id){
             //console.log(id);
-            //console.log(userDetails);
+            console.log(userDetails);
             console.log("email: " + email);
             //console.log(userDetails[0].password);
             //state variables: email, organization, etc, initialize, fill in, will be changed as well
@@ -147,20 +143,12 @@ const UserData = ({id}) => {
     const [postal, setPostal] = useState(null);
 
     useEffect(() => {
-        const fetchUserDetails = async() => {
-            setIsLoading(true);
-            setError(null);
-
-            try{
-                const response = await fetch("http://127.0.0.1:5000/userDetails/" + String(id));
-                //something similar to await fetch to do post
-                //console.log(response);
-                if (!response.ok){
-                    throw new Error("failed to fetch details");
-                }
-                const resp = await response.json();
-                const data = JSON.parse(JSON.stringify(resp));
-                //console.log(data);
+      if (!id){
+        return;
+      }
+      const fetchData = async () => {
+         const data = await fetchUserDetails(id);
+         if (data) {
                 setUsername(data[0].username);
                 setEmail(data[0].email);
                 setOrg(data[0].organization);
@@ -169,16 +157,10 @@ const UserData = ({id}) => {
                 setLocState(data[0].state);
                 setCountry(data[0].country);
                 setPostal(data[0].postalcode);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setIsLoading(false);
             }
-        };
+      }
 
-        if (id) {
-            fetchUserDetails();
-        }
+      fetchData();
     }, [id]);
 
 

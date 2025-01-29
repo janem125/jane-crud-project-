@@ -6,6 +6,7 @@ import TextField from '@mui/material/TextField';
 import {fetchUserDetails, handleSubmit} from "./FetchSubmit.js"; //these might want specific items to be imported
 import {UserDetails, UserData, UserList} from "./DisplayInfo.js";
 
+
 const AddNewUser = ({addUsr}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -36,7 +37,7 @@ const AddNewUser = ({addUsr}) => {
 
     const handleSubmit = async(event) => {
         console.log("submit pressed");
-        //setAddUsr(!addUsr);
+        setAddUsr(!addUsr);
         console.log("328 adduser is " + addUsr);
         event.preventDefault();
         const settings = {
@@ -61,14 +62,14 @@ const AddNewUser = ({addUsr}) => {
             const fetchResponse = await fetch('http://127.0.0.1:5000/addNewUser/', settings);
             const data = await fetchResponse.json();
             console.log("351");
-            //fetchUsers();
+            fetchUsers();
             return data;
         } catch (e){
             console.log("355");
-            //fetchUsers();
+            fetchUsers();
             return e;
         }
-        //fetchUsers();
+        fetchUsers();
     }
 
     if (isLoading) return <p>Loading...</p>;
@@ -92,17 +93,44 @@ const AddNewUser = ({addUsr}) => {
 }
 
 
+ const fetchUsers = async() => {
+    console.log("271 fetchusers");
+        try{
+            console.log("273");
+            const response = await fetch("http://127.0.0.1:5000/userlist");
+
+            if (!response.ok) {
+                throw new Error('failed to fetch users');
+            }
+            const resp = await response.json();
+            console.log("280");
+            console.log(data);
+            const data = JSON.parse(JSON.stringify(resp));
+            return data; //if issues, look here wrt format
+
+        } catch (err) {
+            console.log(err.message);
+        }
+};
+
+
 export default function AddUser() {
+    const [userAdded, setUserAdded] = useState(true);
     const [addUsr, setAddUsr] = useState(false);
+
+    if (userAdded){
+        setUserAdded(!userAdded);
+        fetchUsers();
+    }
 
     const handleUserClick = () => {
         if (addUsr === true){
-            //setUserAdded(true);
-            //fetchUsers();
+            setUserAdded(true);
+            fetchUsers();
             console.log("384 adduser is " + addUsr);
         }
         setAddUsr(!addUsr);
-        //fetchUsers();
+        fetchUsers();
         console.log("388 adduser is " + addUsr);
         //console.log("add user button pressed");
     }
@@ -115,4 +143,3 @@ export default function AddUser() {
     </div>
     );
 }
-

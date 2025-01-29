@@ -6,50 +6,51 @@ import {useEffect, useState} from "react";
 const url = "http://127.0.0.1:5000";
 //!!! passing info to async() funcs
 
-const fetchUserDetailsComponent = async({path}) => {
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
-    setIsLoading(true);
-    setError(null);
+export async function handleSubmit(user, passurl) {
+
+    const submit = async(event) => {
+        event.preventDefault();
+        const settings = {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body:{
+                user,
+            },
+        };
+        try{
+            const newUrl = url + passurl;
+            console.log("newurl ", newUrl);
+            console.log(url, passurl, "/");
+            const fetchResponse = await fetch(passurl, settings);
+            const data = await fetchResponse.json();
+            return data;
+        } catch (e){
+            console.log(passurl);
+            console.log(e);
+        }
+    }
+};
+
+
+export default async function fetchUserDetails (id)  {
 
     try{
-        const response = await fetch(url + path);
-
+        console.log(id);
+        const response = await fetch(`http://127.0.0.1:5000/userDetails/${id}`);
+        //something similar to await fetch to do post
+        //console.log(response);
         if (!response.ok){
             throw new Error("failed to fetch details");
         }
         const resp = await response.json();
         const data = JSON.parse(JSON.stringify(resp));
-        //diff methods do diff things depending on data
-        //setIsLoading(false);
-        //return data;
+        return data;
+
     } catch (err) {
-        setError(err.message);
-    } finally {
-        setIsLoading(false);
-        return data;
+        console.log(err);
     }
+
 };
-
-
-export default function fetchUserDetails({isLoading, Error, path}) {
-    return fetchUserDetailsComponent(isLoading, Error, path);
-}
-
-
-const handleSubmitComponent = async(event, {path, settings}) => {
-    event.preventDefault();
-
-    try{
-        const fetchResponse = await fetch(url + path, settings);
-        const data = await fetchResponse.json();
-        return data;
-    } catch (e){
-        return e;
-    }
-};
-
-
-export function handleSubmit({event, path, settings}){
-    return handleSubmitComponent(event, path, settings);
-}

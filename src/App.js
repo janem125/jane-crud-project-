@@ -5,10 +5,11 @@ import axios from "axios";
 import TextField from '@mui/material/TextField';
 //import AddUser from "./AddUser.js";
 import UserList from "./DisplayInfo.js";
+import handleSubmit from "./FetchSubmit.js";
 
 
-//needs to be able to change display if the database is updated
-// ^look smth up with this
+//remove all adduser related stuff outside of app, but still within file
+//once it runs, move to adduser file + reinstate import
 
 
 const App = () => {
@@ -90,7 +91,10 @@ const App = () => {
         ];
 
         //!!!
-
+        //const submitdata = handleSubmit(userDetails, "addNewUser/");
+        //if submitdata {
+            //fetchUsers();
+        //}
         const handleSubmit = async(event) => {
             console.log("submit pressed");
             setAddUsr(!addUsr);
