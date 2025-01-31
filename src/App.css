@@ -37,6 +37,16 @@
   }
 }
 
+.table{
+    background: #fff;
+    border: 1px solid #999;
+}
+
+.th{
+    background: #fff;
+    border: 1px solid #999;
+}
+
 .grid{
     display: grid;
     border: 2px solid black;

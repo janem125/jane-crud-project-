@@ -165,18 +165,18 @@ const UserData = ({id}) => {
 
 
     return (
-    <div>
+    <tr>
 
-        <div class="inline_grid">{username}</div>
-        <div class="inline_grid">{email}</div>
-        <div class="inline_grid">{org}</div>
-        <div class="inline_grid">{address}</div>
-        <div class="inline_grid">{city}</div>
-        <div class="inline_grid">{locstate}</div>
-        <div class="inline_grid">{country}</div>
-        <div class="inline_grid">{postal}</div>
+        <td>{username}</td>
+        <td>{email}</td>
+        <td>{org}</td>
+        <td>{address}</td>
+        <td>{city}</td>
+        <td>{locstate}</td>
+        <td>{country}</td>
+        <td>{postal}</td>
 
-    </div>
+    </tr>
     );
 };
 
@@ -208,9 +208,11 @@ export default function UserList({users}) {
             return users.map((user) => {
         return (
             <div>
-                <div class="row_grid">{selectedUserId===user.id && <UserDetails id={selectedUserId}/>}</div>
-                <div class="row_grid">{!(selectedUserId === user.id) && <UserData id={user.id}/>}</div>
-                <div class="inline_grid" onClick={() => {handleUserClick(user.id);}}>Edit {user.username} data</div>
+            <tbody>
+                <tr>{selectedUserId===user.id && <UserDetails id={selectedUserId}/>}</tr>
+                <tr>{!(selectedUserId === user.id) && <UserData id={user.id}/>}</tr>
+                <td onClick={() => {handleUserClick(user.id);}}>Edit {user.username} data</td>
+            </tbody>
             </div>
             );
 
@@ -224,21 +226,26 @@ export default function UserList({users}) {
     //.id or .username?
     return(
         <div>
-
-            <div class="inline_grid">Username:</div>
-            <div class="inline_grid">Email:</div>
-            <div class="inline_grid">Organization:</div>
-            <div class="inline_grid">Address:</div>
-            <div class="inline_grid">City:</div>
-            <div class="inline_grid">State:</div>
-            <div class="inline_grid">Country:</div>
-            <div class="inline_grid">Postal Code:</div>
-            <div class="inline_grid">Edit:</div>
-        <div>
+        <table class="table-auto">
+        <thead>
+        <tr>
+            <th>Username:</th>
+            <th>Email:</th>
+            <th>Organization:</th>
+            <th>Address:</th>
+            <th>City:</th>
+            <th>State:</th>
+            <th>Country:</th>
+            <th>Postal Code:</th>
+            <th>Edit:</th>
+        </tr>
+        </thead>
+        <tbody>
             {getRows(users)}
+        </tbody>
+        </table>
         </div>
 
-        </div>
     );
 
 }
