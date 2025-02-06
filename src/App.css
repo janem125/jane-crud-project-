@@ -37,6 +37,12 @@
   }
 }
 
+.center {
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+}
+
 .table{
     background: #fff;
     border: 1px solid #999;
@@ -120,4 +126,12 @@ border {
   padding: 0;
   text-align: center;
   width: 34px;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.theader {
+    background-color: #f2f2f2;
 }

@@ -138,15 +138,15 @@ const App = () => {
         return(
             <div>
                 <form method="post" action="/post" onSubmit={handleSubmit}>
-                    <div class="inline_grid"><TextField id="user" label="Username:" onChange={(e)=>setUser(e.target.value)}/></div>
-                    <div class="inline_grid"><TextField id="email" label="Email:" onChange={(e)=>setEmail(e.target.value)}/></div>
-                    <div class="inline_grid"><TextField id="org" label="Organization:" onChange={(e)=>setOrg(e.target.value)}/></div>
-                    <div class="inline_grid"><TextField id="address" label="Address:" onChange={(e)=>setAddress(e.target.value)}/></div>
-                    <div class="inline_grid"><TextField id="city" label="City:" onChange={(e)=>setCity(e.target.value)}/></div>
-                    <div class="inline_grid"><TextField id="locstate" label="State:" onChange={(e)=>setLocState(e.target.value)}/></div>
-                    <div class="inline_grid"><TextField id="country" label="Country:" onChange={(e)=>setCountry(e.target.value)}/></div>
-                    <div class="inline_grid"><TextField id="postal" label="Postalcode:" onChange={(e)=>setPostal(e.target.value)}/></div>
-                    <div class="inline_grid"><input type="submit" className="btn" value="Update"/></div>
+                    <td><TextField id="user" label="Username:" onChange={(e)=>setUser(e.target.value)}/></td>
+                    <td><TextField id="email" label="Email:" onChange={(e)=>setEmail(e.target.value)}/></td>
+                    <td><TextField id="org" label="Organization:" onChange={(e)=>setOrg(e.target.value)}/></td>
+                    <td><TextField id="address" label="Address:" onChange={(e)=>setAddress(e.target.value)}/></td>
+                    <td><TextField id="city" label="City:" onChange={(e)=>setCity(e.target.value)}/></td>
+                    <td><TextField id="locstate" label="State:" onChange={(e)=>setLocState(e.target.value)}/></td>
+                    <td><TextField id="country" label="Country:" onChange={(e)=>setCountry(e.target.value)}/></td>
+                    <td><TextField id="postal" label="Postalcode:" onChange={(e)=>setPostal(e.target.value)}/></td>
+                    <td><input type="submit" className="btn" value="Update"/></td>
                 </form>
                 </div>
             );
@@ -178,7 +178,7 @@ const App = () => {
     if (error) return <p>Error: {error}</p>;
 
     return(
-        <div>
+        <div class="center">
         <AddUser />
         <UserList users={users}/>
         </div>

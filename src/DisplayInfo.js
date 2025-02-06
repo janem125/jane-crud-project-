@@ -6,6 +6,10 @@ import TextField from '@mui/material/TextField';
 import fetchUserDetails from "./FetchSubmit.js"
 //import {fetchUserDetails, handleSubmit} from "./FetchSubmit.js"
 
+//return data only?
+//but functions are called within whatever html stuff itself
+//
+
 const UserDetails = ({id}) =>{
     console.log("in UserDetails component: " + id);
     const url = "/saveUserDetails";
@@ -103,19 +107,21 @@ const UserDetails = ({id}) =>{
             //console.log(userDetails[0].password);
             //state variables: email, organization, etc, initialize, fill in, will be changed as well
             return(
+            <tr>
             <div>
                 <form method="post" action="/post" onSubmit={handleSubmit}>
-                    <div class="inline_grid"><p></p></div>
-                    <div class="inline_grid"><TextField id="email" label="Email:" defaultValue={email} onChange={(e)=>setEmail(e.target.value)}/></div>
-                    <div class="inline_grid"><TextField id="org" label="Organization:" defaultValue={org} onChange={(e)=>setOrg(e.target.value)}/></div>
-                    <div class="inline_grid"><TextField id="address" label="Address:" defaultValue={address} onChange={(e)=>setAddress(e.target.value)}/></div>
-                    <div class="inline_grid"><TextField id="city" label="City:" defaultValue={city} onChange={(e)=>setCity(e.target.value)}/></div>
-                    <div class="inline_grid"><TextField id="locstate" label="State:" defaultValue={locstate} onChange={(e)=>setLocState(e.target.value)}/></div>
-                    <div class="inline_grid"><TextField id="country" label="Country:" defaultValue={country} onChange={(e)=>setCountry(e.target.value)}/></div>
-                    <div class="inline_grid"><TextField id="postal" label="Postalcode:" defaultValue={postal} onChange={(e)=>setPostal(e.target.value)}/></div>
-                    <div class="inline_grid"><input type="submit" className="btn" value="Update"/></div>
+                    <td><p></p></td>
+                    <td><TextField id="email" label="Email:" defaultValue={email} onChange={(e)=>setEmail(e.target.value)}/></td>
+                    <td><TextField id="org" label="Organization:" defaultValue={org} onChange={(e)=>setOrg(e.target.value)}/></td>
+                    <td><TextField id="address" label="Address:" defaultValue={address} onChange={(e)=>setAddress(e.target.value)}/></td>
+                    <td><TextField id="city" label="City:" defaultValue={city} onChange={(e)=>setCity(e.target.value)}/></td>
+                    <td><TextField id="locstate" label="State:" defaultValue={locstate} onChange={(e)=>setLocState(e.target.value)}/></td>
+                    <td><TextField id="country" label="Country:" defaultValue={country} onChange={(e)=>setCountry(e.target.value)}/></td>
+                    <td><TextField id="postal" label="Postalcode:" defaultValue={postal} onChange={(e)=>setPostal(e.target.value)}/></td>
+                    <td><input type="submit" className="btn" value="Update"/></td>
                 </form>
-                </div>
+            </div>
+            </tr>
             );
         }
         else {
@@ -165,8 +171,7 @@ const UserData = ({id}) => {
 
 
     return (
-    <tr>
-
+    <>
         <td>{username}</td>
         <td>{email}</td>
         <td>{org}</td>
@@ -175,9 +180,9 @@ const UserData = ({id}) => {
         <td>{locstate}</td>
         <td>{country}</td>
         <td>{postal}</td>
-
-    </tr>
-    );
+    </>
+    ); //here--return these as variables instead.
+    //then in getrows...
 };
 
 
@@ -207,14 +212,14 @@ export default function UserList({users}) {
             console.log(users);
             return users.map((user) => {
         return (
-            <div>
-            <tbody>
-                <tr>{selectedUserId===user.id && <UserDetails id={selectedUserId}/>}</tr>
-                <tr>{!(selectedUserId === user.id) && <UserData id={user.id}/>}</tr>
+            <tr>
+                <>{selectedUserId===user.id && <UserDetails id={selectedUserId}/>}</>
+                <>{!(selectedUserId === user.id) && <UserData id={user.id}/>}</>
                 <td onClick={() => {handleUserClick(user.id);}}>Edit {user.username} data</td>
-            </tbody>
-            </div>
-            );
+            </tr>
+
+            ); //here--get variables
+            //put each in <td> format, just like onclick is
 
         });
         }
@@ -226,8 +231,8 @@ export default function UserList({users}) {
     //.id or .username?
     return(
         <div>
-        <table class="table-auto">
-        <thead>
+        <table>
+        <thead class="theader">
         <tr>
             <th>Username:</th>
             <th>Email:</th>
