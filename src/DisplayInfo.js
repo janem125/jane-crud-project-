@@ -2,18 +2,28 @@ import "./App.css"
 import React from "react";
 import {useEffect, useState} from "react";
 import axios from "axios";
-import TextField from '@mui/material/TextField';
+import {TextField, Button} from "@mui/material";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 import fetchUserDetails from "./FetchSubmit.js"
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
 //import {fetchUserDetails, handleSubmit} from "./FetchSubmit.js"
 
 //return data only?
 //but functions are called within whatever html stuff itself
 //
 
-const UserDetails = ({id}) =>{
-    console.log("in UserDetails component: " + id);
+const UserDetails = ({selectedUserId, setSelectedUserId}) =>{
     const url = "/saveUserDetails";
     //const [userDetails, setUserDetails] = useState(null);
+    const [id, setId] = useState(selectedUserId);
+    console.log("in UserDetails component: " + id);
+    //console.log(selectedUserId);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -68,6 +78,7 @@ const UserDetails = ({id}) =>{
 
     const handleSubmit = async(event) => {
         event.preventDefault();
+        setSelectedUserId(null);
         const settings = {
             method: 'POST',
             headers: {
@@ -89,11 +100,20 @@ const UserDetails = ({id}) =>{
         try{
             const fetchResponse = await fetch('http://127.0.0.1:5000/saveUserDetails/', settings);
             const data = await fetchResponse.json();
+            setSelectedUserId(null);
             return data;
         } catch (e){
             return e;
         }
     }
+
+    const updateSelectedId = () => {
+        setSelectedUserId(null);
+    }
+
+    //const handleUserClick = (selectedUserId) => {
+        //updateSelectedId();
+    //}
 
     if (isLoading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
@@ -104,25 +124,23 @@ const UserDetails = ({id}) =>{
             //console.log(id);
             console.log(userDetails);
             console.log("email: " + email);
+            console.log("updated");
             //console.log(userDetails[0].password);
             //state variables: email, organization, etc, initialize, fill in, will be changed as well
             return(
-            <tr>
-            <div>
-                <form method="post" action="/post" onSubmit={handleSubmit}>
-                    <td><p></p></td>
-                    <td><TextField id="email" label="Email:" defaultValue={email} onChange={(e)=>setEmail(e.target.value)}/></td>
-                    <td><TextField id="org" label="Organization:" defaultValue={org} onChange={(e)=>setOrg(e.target.value)}/></td>
-                    <td><TextField id="address" label="Address:" defaultValue={address} onChange={(e)=>setAddress(e.target.value)}/></td>
-                    <td><TextField id="city" label="City:" defaultValue={city} onChange={(e)=>setCity(e.target.value)}/></td>
-                    <td><TextField id="locstate" label="State:" defaultValue={locstate} onChange={(e)=>setLocState(e.target.value)}/></td>
-                    <td><TextField id="country" label="Country:" defaultValue={country} onChange={(e)=>setCountry(e.target.value)}/></td>
-                    <td><TextField id="postal" label="Postalcode:" defaultValue={postal} onChange={(e)=>setPostal(e.target.value)}/></td>
-                    <td><input type="submit" className="btn" value="Update"/></td>
-                </form>
-            </div>
-            </tr>
+            <>
+                <TableCell><p></p></TableCell>
+                <TableCell><TextField id="email" label="Email:" defaultValue={email} onChange={(e)=>setEmail(e.target.value)}/></TableCell>
+                <TableCell><TextField id="org" label="Organization:" defaultValue={org} onChange={(e)=>setOrg(e.target.value)}/></TableCell>
+                <TableCell><TextField id="address" label="Address:" defaultValue={address} onChange={(e)=>setAddress(e.target.value)}/></TableCell>
+                <TableCell><TextField id="city" label="City:" defaultValue={city} onChange={(e)=>setCity(e.target.value)}/></TableCell>
+                <TableCell><TextField id="locstate" label="State:" defaultValue={locstate} onChange={(e)=>setLocState(e.target.value)}/></TableCell>
+                <TableCell><TextField id="country" label="Country:" defaultValue={country} onChange={(e)=>setCountry(e.target.value)}/></TableCell>
+                <TableCell><TextField id="postal" label="Postalcode:" defaultValue={postal} onChange={(e)=>setPostal(e.target.value)}/></TableCell>
+                <Button onClick={handleSubmit}><SaveIcon /></Button>
+            </>
             );
+            //material ui button
         }
         else {
             return <p></p>;
@@ -172,14 +190,14 @@ const UserData = ({id}) => {
 
     return (
     <>
-        <td>{username}</td>
-        <td>{email}</td>
-        <td>{org}</td>
-        <td>{address}</td>
-        <td>{city}</td>
-        <td>{locstate}</td>
-        <td>{country}</td>
-        <td>{postal}</td>
+        <TableCell>{username}</TableCell>
+        <TableCell>{email}</TableCell>
+        <TableCell>{org}</TableCell>
+        <TableCell>{address}</TableCell>
+        <TableCell>{city}</TableCell>
+        <TableCell>{locstate}</TableCell>
+        <TableCell>{country}</TableCell>
+        <TableCell>{postal}</TableCell>
     </>
     ); //here--return these as variables instead.
     //then in getrows...
@@ -187,7 +205,7 @@ const UserData = ({id}) => {
 
 
 export default function UserList({users}) {
-    const [selectedUserId, setSelectedUserId] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState(null);
     const [rowData, setRowData] = useState(users);
     const [editData, setEditData] = useState({});
 
@@ -198,8 +216,8 @@ export default function UserList({users}) {
         else{
             setSelectedUserId(id);
         }
-        console.log(selectedUserId);
-        console.log(id);
+        console.log("selecteduserid " + selectedUserId);
+        console.log("id " + id);
     };
 
     useEffect(() => {
@@ -212,14 +230,15 @@ export default function UserList({users}) {
             console.log(users);
             return users.map((user) => {
         return (
-            <tr>
-                <>{selectedUserId===user.id && <UserDetails id={selectedUserId}/>}</>
+            <TableRow>
+                <>
                 <>{!(selectedUserId === user.id) && <UserData id={user.id}/>}</>
-                <td onClick={() => {handleUserClick(user.id);}}>Edit {user.username} data</td>
-            </tr>
+                {(selectedUserId !== null && selectedUserId === user.id) ? <UserDetails selectedUserId={selectedUserId} setSelectedUserId={setSelectedUserId}/> : <TableCell onClick={() => {handleUserClick(user.id);}}><EditIcon /></TableCell>}
+                </>
+            </TableRow>
 
-            ); //here--get variables
-            //put each in <td> format, just like onclick is
+            );
+            //{!(selectedUserId === user.id) && <td onClick={() => {handleUserClick(user.id);}}>Edit {user.username} data</td>}
 
         });
         }
@@ -231,24 +250,32 @@ export default function UserList({users}) {
     //.id or .username?
     return(
         <div>
-        <table>
-        <thead class="theader">
-        <tr>
-            <th>Username:</th>
-            <th>Email:</th>
-            <th>Organization:</th>
-            <th>Address:</th>
-            <th>City:</th>
-            <th>State:</th>
-            <th>Country:</th>
-            <th>Postal Code:</th>
-            <th>Edit:</th>
-        </tr>
-        </thead>
-        <tbody>
+        <TableContainer>
+        <TableHead>
+        <TableRow
+        sx={{
+              "& th": {
+                fontSize: "1rem",
+                color: "white",
+                backgroundColor: "gray"
+              }
+            }}
+        >
+            <TableCell>Username:</TableCell>
+            <TableCell>Email:</TableCell>
+            <TableCell>Organization:</TableCell>
+            <TableCell>Address:</TableCell>
+            <TableCell>City:</TableCell>
+            <TableCell>State:</TableCell>
+            <TableCell>Country:</TableCell>
+            <TableCell>Postal Code:</TableCell>
+            <TableCell>Edit:</TableCell>
+        </TableRow>
+        </TableHead>
+        <TableBody>
             {getRows(users)}
-        </tbody>
-        </table>
+        </TableBody>
+        </TableContainer>
         </div>
 
     );

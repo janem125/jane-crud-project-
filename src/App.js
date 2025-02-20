@@ -3,9 +3,15 @@ import React from "react";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
 //import AddUser from "./AddUser.js";
 import UserList from "./DisplayInfo.js";
 import handleSubmit from "./FetchSubmit.js";
+import Stack from '@mui/material/Stack';
+import Grid from "@mui/material/Grid";
+import { positions } from '@mui/system';
+
 
 
 //remove all adduser related stuff outside of app, but still within file
@@ -136,7 +142,7 @@ const App = () => {
         if (error) return <p>Error: {error}</p>;
 
         return(
-            <div>
+            <Stack p={2}>
                 <form method="post" action="/post" onSubmit={handleSubmit}>
                     <td><TextField id="user" label="Username:" onChange={(e)=>setUser(e.target.value)}/></td>
                     <td><TextField id="email" label="Email:" onChange={(e)=>setEmail(e.target.value)}/></td>
@@ -148,7 +154,7 @@ const App = () => {
                     <td><TextField id="postal" label="Postalcode:" onChange={(e)=>setPostal(e.target.value)}/></td>
                     <td><input type="submit" className="btn" value="Update"/></td>
                 </form>
-                </div>
+            </Stack>
             );
     }
 
@@ -167,21 +173,33 @@ const App = () => {
         //fetchUsers();
 
         return(
-        <div>
-            <button onClick={handleUserClick} type="button">Add User</button>
+        <>
+            <Button onClick={handleUserClick} alignItems="end" position="fixed" p={2}>Add User</Button>
             {addUsr && <AddNewUser />}
-        </div>
+        </>
         );
     }
 
     if (isLoading) return <p>Loading...</p>
     if (error) return <p>Error: {error}</p>;
 
+    //sx={{
+    //position:"absolute"
+    //}}
+
     return(
-        <div class="center">
-        <AddUser />
-        <UserList users={users}/>
+        <Container>
+        <div>
+        <Stack p={2} alignItems="end">
+            <AddUser/>
+        </Stack>
         </div>
+        <div>
+        <Stack p={2} alignItems="center" style={{width:"100%"}}>
+            <UserList users={users}/>
+        </Stack>
+        </div>
+        </Container>
     );
 };
 
