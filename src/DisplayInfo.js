@@ -249,8 +249,9 @@ export default function UserList({users}) {
 //<div class="inline_grid" onClick={() => {handleUserClick(user.id);}}><button >Edit {user.username} data</button></div>
     //.id or .username?
     return(
-        <div>
+
         <TableContainer>
+        <Table>
         <TableHead>
         <TableRow
         sx={{
@@ -275,8 +276,9 @@ export default function UserList({users}) {
         <TableBody>
             {getRows(users)}
         </TableBody>
+        </Table>
         </TableContainer>
-        </div>
+
 
     );
 
