@@ -7,18 +7,17 @@ const url = "http://127.0.0.1:5000";
 //!!! passing info to async() funcs
 
 export async function handleSubmit(user, passurl) {
+    console.log(user);
 
-    const submit = async(event) => {
-        event.preventDefault();
         const settings = {
             method: 'POST',
             headers: {
-                'Accept': 'application/json',
+                //'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
-            body:{
-                user,
-            },
+            body: JSON.stringify(
+                user
+            ),
         };
         try{
             const newUrl = url + passurl;
@@ -31,11 +30,11 @@ export async function handleSubmit(user, passurl) {
             console.log(passurl);
             console.log(e);
         }
-    }
+
 };
 
 
-export default async function fetchUserDetails (id)  {
+export async function fetchUserDetails (id)  {
 
     try{
         console.log(id);

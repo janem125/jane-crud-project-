@@ -9,10 +9,9 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import fetchUserDetails from "./FetchSubmit.js"
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
-//import {fetchUserDetails, handleSubmit} from "./FetchSubmit.js"
+import {fetchUserDetails, handleSubmit} from "./FetchSubmit.js"
 
 //return data only?
 //but functions are called within whatever html stuff itself
@@ -36,16 +35,18 @@ const UserDetails = ({selectedUserId, setSelectedUserId}) =>{
     const [country, setCountry] = useState(null);
     const [postal, setPostal] = useState(null);
 
-    let userDetails = [
-        {username: {username}},
-        {email: {email}},
-        {organization: {org}},
-        {address: {address}},
-        {city: {city}},
-        {state: {locstate}},
-        {country: {country}},
-        {postalcode: {postal}},
-    ];
+    const [userDetails, setUserDetails] = useState({
+        id: id,
+        username: username,
+        email: email,
+        organization: org,
+        address: address,
+        city: city,
+        state: locstate,
+        country: country,
+        postalcode: postal,
+    });
+
 
     useEffect(() => {
     if (!id){
@@ -53,59 +54,36 @@ const UserDetails = ({selectedUserId, setSelectedUserId}) =>{
       }
       const fetchData = async () => {
          const data = await fetchUserDetails(id);
+
          if (data) {
-                setUsername(data[0].username);
-                setEmail(data[0].email);
-                setOrg(data[0].organization);
-                setAddress(data[0].address);
-                setCity(data[0].city);
-                setLocState(data[0].state);
-                setCountry(data[0].country);
-                setPostal(data[0].postalcode);
+
+            setUsername(data[0].username);
+            setEmail(data[0].email);
+            setOrg(data[0].organization);
+            setAddress(data[0].address);
+            setCity(data[0].city);
+            setLocState(data[0].state);
+            setCountry(data[0].country);
+            setPostal(data[0].postalcode);
+
+            //{...userDetails, field: value}
+
+            setUserDetails({
+                id: id,
+                username: data[0].username,
+                email: data[0].email,
+                organization: data[0].organization,
+                address: data[0].address,
+                city: data[0].city,
+                state: data[0].state,
+                country: data[0].country,
+                postalcode: data[0].postalcode,
+            });
             }
       }
 
       fetchData();
     }, [id]);
-
-    const callHandleSubmit = async(event) => {
-        console.log("57");
-        console.log("http://127.0.0.1:5000" + url + "/");
-        const newUrl = ("http://127.0.0.1:5000", url, "/");
-        console.log(newUrl);
-        handleSubmit(userDetails, "http://127.0.0.1:5000/saveUserDetails/");
-    }
-
-    const handleSubmit = async(event) => {
-        event.preventDefault();
-        setSelectedUserId(null);
-        const settings = {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                "id": id,
-                username,
-                email,
-                org,
-                address,
-                city,
-                locstate,
-                country,
-                postal,
-            }),
-        };
-        try{
-            const fetchResponse = await fetch('http://127.0.0.1:5000/saveUserDetails/', settings);
-            const data = await fetchResponse.json();
-            setSelectedUserId(null);
-            return data;
-        } catch (e){
-            return e;
-        }
-    }
 
     const updateSelectedId = () => {
         setSelectedUserId(null);
@@ -137,7 +115,20 @@ const UserDetails = ({selectedUserId, setSelectedUserId}) =>{
                 <TableCell><TextField id="locstate" label="State:" defaultValue={locstate} onChange={(e)=>setLocState(e.target.value)}/></TableCell>
                 <TableCell><TextField id="country" label="Country:" defaultValue={country} onChange={(e)=>setCountry(e.target.value)}/></TableCell>
                 <TableCell><TextField id="postal" label="Postalcode:" defaultValue={postal} onChange={(e)=>setPostal(e.target.value)}/></TableCell>
-                <Button onClick={handleSubmit}><SaveIcon /></Button>
+                <Button onClick={async(event)=>{console.log("button clicked")
+                    await handleSubmit({
+                    id: id,
+                    username: username,
+                    email: email,
+                    organization: org,
+                    address: address,
+                    city: city,
+                    state: locstate,
+                    country: country,
+                    postalcode: postal,
+                }, "http://127.0.0.1:5000/saveUserDetails/")
+                setSelectedUserId(null)
+                }}><SaveIcon /></Button>
             </>
             );
             //material ui button

@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 //import AddUser from "./AddUser.js";
 import UserList from "./DisplayInfo.js";
-import handleSubmit from "./FetchSubmit.js";
+import {handleSubmit} from "./FetchSubmit.js";
 import Stack from '@mui/material/Stack';
 import Grid from "@mui/material/Grid";
 import { positions } from '@mui/system';
@@ -74,7 +74,7 @@ const App = () => {
         const [isLoading, setIsLoading] = useState(false);
         const [error, setError] = useState(null);
 
-        const [user, setUser] = useState(null);
+        const [username, setUsername] = useState(null);
         const [pass, setPass] = useState(null);
         const [email, setEmail] = useState(null);
         const [org, setOrg] = useState(null);
@@ -84,59 +84,16 @@ const App = () => {
         const [country, setCountry] = useState(null);
         const [postal, setPostal] = useState(null);
 
-        let userDetails = [
-            {username: {user}},
-            {password: {pass}},
-            {email: {email}},
-            {organization: {org}},
-            {address: {address}},
-            {city: {city}},
-            {state: {locstate}},
-            {country: {country}},
-            {postalcode: {postal}},
-        ];
-
-        //!!!
-        //const submitdata = handleSubmit(userDetails, "addNewUser/");
-        //if submitdata {
-            //fetchUsers();
-        //}
-        const handleSubmit = async(event) => {
-            console.log("submit pressed");
-            setAddUsr(!addUsr);
-            console.log("328 adduser is " + addUsr);
-            event.preventDefault();
-            const settings = {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    user,
-                    pass,
-                    email,
-                    org,
-                    address,
-                    city,
-                    locstate,
-                    country,
-                    postal,
-                }),
-            };
-            try{
-                const fetchResponse = await fetch('http://127.0.0.1:5000/addNewUser/', settings);
-                const data = await fetchResponse.json();
-                console.log("351");
-                fetchUsers();
-                return data;
-            } catch (e){
-                console.log("355");
-                fetchUsers();
-                return e;
-            }
-            fetchUsers();
-        }
+        const [userDetails, setUserDetails] = useState({
+            username: username,
+            email: email,
+            organization: org,
+            address: address,
+            city: city,
+            state: locstate,
+            country: country,
+            postalcode: postal,
+        });
 
         if (isLoading) return <p>Loading...</p>;
         if (error) return <p>Error: {error}</p>;
@@ -144,7 +101,7 @@ const App = () => {
         return(
             <Stack p={2}>
                 <form method="post" action="/post" onSubmit={handleSubmit}>
-                    <td><TextField id="user" label="Username:" onChange={(e)=>setUser(e.target.value)}/></td>
+                    <td><TextField id="user" label="Username:" onChange={(e)=>setUsername(e.target.value)}/></td>
                     <td><TextField id="email" label="Email:" onChange={(e)=>setEmail(e.target.value)}/></td>
                     <td><TextField id="org" label="Organization:" onChange={(e)=>setOrg(e.target.value)}/></td>
                     <td><TextField id="address" label="Address:" onChange={(e)=>setAddress(e.target.value)}/></td>
@@ -152,7 +109,18 @@ const App = () => {
                     <td><TextField id="locstate" label="State:" onChange={(e)=>setLocState(e.target.value)}/></td>
                     <td><TextField id="country" label="Country:" onChange={(e)=>setCountry(e.target.value)}/></td>
                     <td><TextField id="postal" label="Postalcode:" onChange={(e)=>setPostal(e.target.value)}/></td>
-                    <td><input type="submit" className="btn" value="Update"/></td>
+                    <td><Button onClick={async(event)=>{console.log("button clicked")
+                        await handleSubmit({
+                        username: username,
+                        email: email,
+                        organization: org,
+                        address: address,
+                        city: city,
+                        state: locstate,
+                        country: country,
+                        postalcode: postal,
+                    }, "http://127.0.0.1:5000/addNewUser/")
+                    }}>Update</Button></td>
                 </form>
             </Stack>
             );
