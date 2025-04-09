@@ -1,9 +1,9 @@
 import "./App.css"
-import React from "react";
-import {useEffect, useState} from "react";
+//import React from "react";
+//import {useEffect, useState} from "react";
 
 
-const url = "http://127.0.0.1:5000";
+const url = "http://localhost:5000";
 //!!! passing info to async() funcs
 
 export async function handleSubmit(user, passurl) {
@@ -38,7 +38,7 @@ export async function fetchUserDetails (id)  {
 
     try{
         console.log(id);
-        const response = await fetch(`http://127.0.0.1:5000/userDetails/${id}`);
+        const response = await fetch(`http://localhost:5000/userDetails/${id}`);
         //something similar to await fetch to do post
         //console.log(response);
         if (!response.ok){

@@ -126,7 +126,7 @@ const UserDetails = ({selectedUserId, setSelectedUserId}) =>{
                     state: locstate,
                     country: country,
                     postalcode: postal,
-                }, "http://127.0.0.1:5000/saveUserDetails/")
+                }, "http://localhost:5000/saveUserDetails/")
                 setSelectedUserId(null)
                 }}><SaveIcon /></Button>
             </>

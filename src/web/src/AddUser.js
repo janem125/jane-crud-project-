@@ -57,7 +57,7 @@ const AddNewUser = () => {
                         state: locstate,
                         country: country,
                         postalcode: postal,
-                    }, "http://127.0.0.1:5000/addNewUser/")
+                    }, "http://localhost:5000/addNewUser/")
                     }}>Update</Button></td>
                 </form>
             </Stack>

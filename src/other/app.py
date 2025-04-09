@@ -2,19 +2,17 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 import mysql.connector
 import re
 import json
+import sys
+import traceback
 from flask_cors import CORS, cross_origin
 
-def create_app():
-    app = Flask(__name__)
-    CORS(app,resources={r"/*": {"origins": "*"}})
-    return app
-
-app = create_app()
+app = Flask(__name__)
+CORS(app,resources={r"*": {"origins": "*"}})
 
 app.secret_key = 'your secret key' #!!! see if this is decided on earlier in tutorial
 
 #app.config['MYSQL_HOST'] = 'flask-api:5000'
-app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_HOST'] = 'localhost' #'host.docker.internal'
 #package.json changed from "proxy": "http://flask-api:5000",
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ""
@@ -32,6 +30,17 @@ def handle_preflight():
 		return response
 """
 
+def get_connection():
+	config = {
+		'host': 'mysql',
+		'user': 'root',
+		'password': 'MYsqldocker1Pass2',
+		'database': 'dockerusers2-mysql',
+		'port': '3306',
+	}
+	connection = mysql.connector.connect(**config)
+	return connection
+
 @app.route('/', methods=['GET', 'POST', 'OPTIONS'])
 @cross_origin()
 def main():
@@ -39,12 +48,7 @@ def main():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-	connection = mysql.connector.connect(
-		host="localhost",
-		user="root",
-		password="MYsql!Pass1",
-		database="users"
-	)
+	connection = get_connection()
 	msg = ''
 	if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
 		username = request.form['username']
@@ -78,12 +82,7 @@ def logout():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-	connection = mysql.connector.connect(
-		host="localhost",
-		user="root",
-		password="MYsql!Pass1",
-		database="users"
-	)
+	connection = get_connection()
 	msg = ''
 	if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form and 'address' in request.form and 'city' in request.form and 'country' in request.form and 'postalcode' in request.form and 'organization' in request.form:
 		username = request.form['username']
@@ -135,12 +134,7 @@ def index():
 
 @app.route("/display")
 def display():
-	connection = mysql.connector.connect(
-		host="localhost",
-		user="root",
-		password="MYsql!Pass1",
-		database="users"
-	)
+	connection = get_connection()
 	if 'loggedin' in session:
 		cursor = connection.cursor()
 		cursor.execute('SELECT * FROM user_accts WHERE id = %s',
@@ -157,30 +151,29 @@ def display():
 
 @app.route("/userlist", methods=['GET'])
 def userlist():
-	connection = mysql.connector.connect(
-		host="localhost",
-		user="root",
-		password="MYsql!Pass1",
-		database="users"
-	)
-	cursor = connection.cursor()
-	#cursor.execute('SELECT id, username FROM user_accts WHERE id is NOT NULL')
-	cursor.execute('SELECT * FROM user_accts WHERE id is NOT NULL')
-	all_cursor = cursor.fetchall()
-	all_accts = cursor.description #is this necessary?
+	try:
+		connection = get_connection()
+		cursor = connection.cursor()
+		#cursor.execute('SELECT id, username FROM user_accts WHERE id is NOT NULL')
+		cursor.execute('SELECT * FROM user_accts WHERE id is NOT NULL')
+		all_cursor = cursor.fetchall()
+		all_accts = cursor.description #is this necessary?
 
-	columns = []
-	for i in all_accts:
-		columns.append(i[0])
-	
-	jsondata = []
-	for n in all_cursor:
-		temp = {}
-		for z in range(len(columns)):
-			temp[columns[z]] = n[z]
-		jsondata.append(temp)
-	connection.close()
-	return jsonify(jsondata)
+		columns = []
+		for i in all_accts:
+			columns.append(i[0])
+
+		jsondata = []
+		for n in all_cursor:
+			temp = {}
+			for z in range(len(columns)):
+				temp[columns[z]] = n[z]
+			jsondata.append(temp)
+		connection.close()
+		return jsonify(jsondata)
+	except Exception as e:
+		print(str(traceback.format_exc()), file=sys.stderr)
+		return jsonify(str(traceback.format_exc())), 500
 
 #saveuserdetails route
 
@@ -212,13 +205,7 @@ def saveUserDetails():
 	if request.method == 'POST' and user_id:
 		print("181")
 		print(str(request.form))
-		connection = mysql.connector.connect(
-			host="localhost",
-			user="root",
-			password="MYsql!Pass1",
-			database="users",
-			get_warnings=True,
-		)
+		connection = get_connection()
 		cursor1 = connection.cursor()
 
 		#where are we getting id info from?
@@ -269,13 +256,7 @@ def addNewUser():
 	if request.method == 'POST' and email:
 		execute_stmnt = "INSERT INTO user_accts (username, password, email, organization, address, city, state, country, postalcode) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (user, passw, email, org, address, city, locstate, country, postal)
 		print(execute_stmnt)
-		connection = mysql.connector.connect(
-			host="localhost",
-			user="root",
-			password="MYsql!Pass1",
-			database="users",
-			get_warnings=True,
-		)
+		connection = get_connection()
 		cursor1 = connection.cursor()
 		cursor1.execute(execute_stmnt)
 		connection.commit()
@@ -289,12 +270,7 @@ def addNewUser():
 #Localhost:3000/getUserDetail/5
 @app.route("/userDetails/<id>", methods=['GET'])
 def userDetails(id):
-	connection = mysql.connector.connect(
-		host="localhost",
-		user="root",
-		password="MYsql!Pass1",
-		database="users"
-	)
+	connection = get_connection()
 	cursor = connection.cursor()
 	print(id)
 	cursor.execute('SELECT username, email, organization, address, city, state, country, postalcode FROM user_accts WHERE id=%s', (id, ))
@@ -320,12 +296,7 @@ def userDetails(id):
 @app.route("/update", methods=['GET', 'POST'])
 def update():
 	msg = ''
-	connection = mysql.connector.connect(
-		host="localhost",
-		user="root",
-		password="MYsql!Pass1",
-		database="users"
-	)
+	connection = get_connection()
 	if 'loggedin' in session:
 		if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form and 'address' in request.form and 'city' in request.form and 'country' in request.form and 'postalcode' in request.form and 'organization' in request.form:
 			username = request.form['username']
