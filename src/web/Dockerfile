@@ -2,8 +2,7 @@ FROM node:16
 
 WORKDIR /app
 ENV CI=true
-COPY web/package.json ./
-
+COPY package.json ./
 
 RUN npm install
 
